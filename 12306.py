@@ -32,9 +32,9 @@ async def get_stations(session):
         print('loading local station_name.js')
     with open('station_name.js', encoding='utf-8') as fp:
         data = fp.read()
-        data = data.partition('=')[2].strip("'") #var station_names ='..'
+        data = data.partition('=')[2].strip("'")
     for station in data.split('@')[1:]:
-        items = station.split('|') # bjb|北京北|VAP|beijingbei|bjb|0
+        items = station.split('|')
         stations[ items[1] ] = items[2]
     return stations
 
@@ -62,13 +62,13 @@ async def main(loop):
     with aiohttp.TCPConnector(verify_ssl=False) as conn:
         async with aiohttp.ClientSession(connector=conn, loop=loop) as session:
             charset, trains = await get_trains(session, '2017-02-08', stations['北京'], stations['上海'])
-            print(trains.decode(charset))
+            #print(trains.decode(charset))
 
     with aiohttp.TCPConnector(verify_ssl=False) as conn:
         async with aiohttp.ClientSession(connector=conn, loop=loop) as session:
             charset, html = await fetch(session, 'https://kyfw.12306.cn/otn/leftTicket/queryTicketPrice?train_no=240000G1010C&from_station_no=01&to_station_no=11&seat_types=OM9&train_date=2017-02-08')
             open('text.txt', 'w', encoding=charset).write(html.decode(charset))
-            print(html.decode(charset))
+            #print(html.decode(charset))
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main(loop))
